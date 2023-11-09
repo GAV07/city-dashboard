@@ -9,7 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "gunzip-maybe": "^1.4.2",
     "puppeteer": "^21.5.0",
-    "xml2js": "^0.6.2"
+    "puppeteer-utilz": "^4.0.8",
+    "xml2js": "^0.6.2",
+    "z-lib": "^0.0.8"
   }
 }
