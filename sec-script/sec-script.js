@@ -15,11 +15,12 @@ const getXMLData = () => {
     // read the xml file
     const data = fs.readFileSync(__dirname + '/downloads/sec.xml', {encoding: 'utf8', flag: 'r'});
 
-    console.log("parsing xml data to json")
+    console.log("Parsing xml data to json")
     // parse the xml data to json
     const parser = new xml2js.Parser();
     parser.parseString(data, function (err, result) {
 
+        console.log('Looping through all firms to update db');
         // loop through each firm
         result.IAPDFirmSECReport.Firms[0].Firm.forEach(async (firm, index) => {
 
@@ -148,14 +149,14 @@ const unzipFile = async ()=>{
 
     // event listener when the decompression is done
     output.on('finish', async () => {
-        console.log('file decompressed')
+        console.log('File Decompressed')
 
         // once the decompression is done, parse the xml to json
         await getXMLData();
 
         // remove the downloads folder so when the next job we start clean again
         removeFilesAndDirectories(path.join(__dirname + '/downloads'));
-        console.log('Removed folder /downloads');
+        console.log('Deleted /downloads folder');
 
     });
 
@@ -204,8 +205,8 @@ const createRecord = async (recordData) => {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            console.log('Record created successfully:', data);
+            // const data = await response.json();
+            // console.log('Record created successfully:', data);
         } else {
             console.error('Failed to create record:', response.statusText);
         }
