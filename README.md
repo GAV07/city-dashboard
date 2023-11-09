@@ -25,7 +25,7 @@ To get started, follow these steps to set up and run the project on your local m
    git clone https://github.com/elouis12/dashboard-scripts.git
     ```
 
-3. **Clone the repository to your local machine:**
+3. **Install the necessary packages:**
 
    ```bash
    cd dashboard-scripts
