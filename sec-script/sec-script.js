@@ -71,12 +71,27 @@ const getXMLData = () => {
                 ]
             };
 
+
+
             if (index < 1) {
+<<<<<<< HEAD
                 try {
                     await createRecord(recordData);
                 }catch (e){
                     console.log(e)
                 }
+=======
+
+                try {
+
+                    await createRecord(recordData);
+
+                }catch (e){
+
+                    console.log(e)
+                }
+
+>>>>>>> 0af794d82c8fb0c495cbb6ebc65f5ce50faa5a84
             }
         })
 
@@ -201,6 +216,33 @@ const createRecord = async (recordData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(recordData)
+<<<<<<< HEAD
+=======
+           /* body: JSON.stringify({
+                "records": [
+                    {
+                        "fields": {
+                            "Legal Name": "CITADEL ADVISORS LLC",
+                            "Firm Type": "Registered",
+                            "Status": "APPROVED",
+                            "Date": "2010-01-05",
+                            "Total Employees": 2823,
+                            "Total RAUM": 339079412155,
+                            "Number of Accounts": 26,
+                            "City": "MIAMI",
+                            "State": "FL",
+                            "Country": "United States",
+                            "Phone Number": "305-929-6851",
+                            "Postal Code": 33131,
+                            "Street": "SOUTHEAST FINANCIAL CENTER",
+                            "Street 2": "200 S. BISCAYNE BLVD., SUITE 3300",
+                            "Filing Date": "2023-05-18",
+                            "Form Version": "10/2021"
+                        }
+                    }
+                ]
+            }),*/
+>>>>>>> 0af794d82c8fb0c495cbb6ebc65f5ce50faa5a84
         });
 
         if (response.ok) {
