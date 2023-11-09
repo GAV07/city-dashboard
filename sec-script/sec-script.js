@@ -4,6 +4,10 @@ const puppeteer = require("puppeteer");
 const path = require("path")
 const zlib = require("zlib")
 const gunzipMaybe = require('gunzip-maybe');
+const dotenv = require('dotenv');
+
+const envPath = path.resolve(__dirname, '../.env');  // path of .env because we can only use environment variables if .env is in the root, so we need to specify it's location
+dotenv.config({path: envPath});
 
 // get the xml data
 const getXMLData = () => {
@@ -17,13 +21,14 @@ const getXMLData = () => {
     parser.parseString(data, function (err, result) {
 
         // loop through each firm
-        result.IAPDFirmSECReport.Firms[0].Firm.forEach((firm, index) => {
+        result.IAPDFirmSECReport.Firms[0].Firm.forEach(async (firm, index) => {
 
             const legalName = firm.Info[0]?.$?.LegalNm?.trim() ?? "";
             const street = firm.MainAddr[0]?.$?.Strt1?.trim() ?? "";
             const street2 = firm.MainAddr[0]?.$?.Strt2?.trim() ?? "";
-            const postalCode = firm.MainAddr[0]?.$?.PostlCd?.trim() ?? "";
+            const postalCode = parseInt(firm.MainAddr[0]?.$?.PostlCd?.trim()) ?? "";
             const city = firm.MainAddr[0]?.$?.City?.trim() ?? "";
+            const state = firm.MainAddr[0]?.$?.State?.trim() ?? "";
             const country = firm.MainAddr[0]?.$?.Cntry?.trim() ?? "";
             const phoneNumber = firm.MainAddr[0]?.$?.PhNb?.trim() ?? "";
             const firmType = firm.Rgstn[0]?.$?.FirmType?.trim() ?? "";
@@ -36,27 +41,57 @@ const getXMLData = () => {
 
             // part 1 of the form and its specific sections
             const part1 = formInfo.Part1A[0];
-            const totalEmployees = part1.Item5A[0]?.$?.TtlEmp ?? "";
-            const totalRAUM = part1.Item5F[0]?.$?.Q5F2C ?? "";
-            const numberOfAccounts = part1.Item5F[0]?.$?.Q5F2F ?? "";
-            const totalAssets = part1.Item5F[0]?.$?.Q5F3 ?? "";
-
+            const totalEmployees = parseInt(part1.Item5A[0]?.$?.TtlEmp?.trim()) ?? "";
+            const totalRAUM = parseInt(part1.Item5F[0]?.$?.Q5F2C?.trim()) ?? "";
+            const numberOfAccounts = parseInt(part1.Item5F[0]?.$?.Q5F2F?.trim()) ?? "";
+            const totalAssets = parseInt(part1.Item5F[0]?.$?.Q5F3?.trim()) ?? "";
 
             const recordData = {
-                fields: {
-                    "Legal Name": legalName,
-                    "street": street,
-                },
+                "records": [
+                    {
+                        "fields": {
+                            "Legal Name": legalName,
+                            "Firm Type": firmType,
+                            "Status": status,
+                            "Date": fillingDate,
+                            "Total Employees": totalEmployees,
+                            "Total RAUM": totalRAUM,
+                            "Number of Accounts": numberOfAccounts,
+                            "City": city,
+                            "State": state,
+                            "Country": country,
+                            "Phone Number": phoneNumber,
+                            "Postal Code": postalCode,
+                            "Street": street,
+                            "Street 2": street2,
+                            "Filing Date": fillingDate,
+                            "Form Version": formVersion
+                        }
+                    }
+                ]
             };
 
+
+
             if (index < 1) {
-                console.log(recordData);
+
+                try {
+
+                    await createRecord(recordData);
+
+                }catch (e){
+
+                    console.log(e)
+                }
+
             }
 
 
         })
 
     });
+
+    console.log('Updated all firms to airtable');
 }
 
 // removes files and directories (/downloads)
@@ -160,6 +195,13 @@ async function waitForDownload() {
 
 // stores each row into the airtable
 const createRecord = async (recordData) => {
+
+    const apiKey = process.env.API_KEY;
+    const baseId = process.env.BASE_ID;
+    const table = process.env.SEC_TABLE;
+
+    const airtableURL = `https://api.airtable.com/v0/${baseId}/${table}`;
+
     try {
         const response = await fetch(airtableURL, {
             method: 'POST',
@@ -167,7 +209,31 @@ const createRecord = async (recordData) => {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(recordData),
+            body: JSON.stringify(recordData)
+           /* body: JSON.stringify({
+                "records": [
+                    {
+                        "fields": {
+                            "Legal Name": "CITADEL ADVISORS LLC",
+                            "Firm Type": "Registered",
+                            "Status": "APPROVED",
+                            "Date": "2010-01-05",
+                            "Total Employees": 2823,
+                            "Total RAUM": 339079412155,
+                            "Number of Accounts": 26,
+                            "City": "MIAMI",
+                            "State": "FL",
+                            "Country": "United States",
+                            "Phone Number": "305-929-6851",
+                            "Postal Code": 33131,
+                            "Street": "SOUTHEAST FINANCIAL CENTER",
+                            "Street 2": "200 S. BISCAYNE BLVD., SUITE 3300",
+                            "Filing Date": "2023-05-18",
+                            "Form Version": "10/2021"
+                        }
+                    }
+                ]
+            }),*/
         });
 
         if (response.ok) {
@@ -188,4 +254,3 @@ const main = async ()=>{
 }
 
 main();
-
