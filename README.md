@@ -6,7 +6,7 @@
     - [Installation](#installation)
     - [Environment Variables](#environment-variables)
 2. [Folder Structure](#folder-structure)
-   - [/sec-script](#sec-script)
+
 
 ## Project Setup
 
@@ -32,7 +32,7 @@ To get started, follow these steps to set up and run the project on your local m
    npm install
    ```
 
-### Environment
+### Environment Variables
 
 To configure the project correctly, you need to set up environment variables. Create a .env file in the root directory (dashboard-scripts) and add the following variables:
 
