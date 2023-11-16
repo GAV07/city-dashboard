@@ -5,7 +5,6 @@ const path = require("path")
 const zlib = require("zlib")
 const gunzipMaybe = require('gunzip-maybe');
 const dotenv = require('dotenv');
-
 const envPath = path.resolve(__dirname, '../.env');  // path of .env because we can only use environment variables if .env is in the root, so we need to specify it's location
 dotenv.config({path: envPath});
 
@@ -113,6 +112,7 @@ const downloadXML = async () => {
     // opens up a page
     const page = await browser.newPage();
 
+
     // allows to set up how to download files
     const cdpsession = await page.target().createCDPSession();
     cdpsession.send("Browser.setDownloadBehavior", {behavior: "allow", downloadPath: path.resolve('./downloads')});
@@ -154,8 +154,16 @@ const unzipFile = async ()=>{
         // once the decompression is done, parse the xml to json
         await getXMLData();
 
-        // remove the downloads folder so when the next job we start clean again
-        removeFilesAndDirectories(path.join(__dirname + '/downloads'));
+
+        const folderToDownload = path.join(__dirname + '/downloads');
+        // checks if the /downloads folder was removed
+        while(fs.existsSync(folderToDownload)){
+
+            // remove the downloads folder so when the next job starts, we start clean again
+            removeFilesAndDirectories(folderToDownload);
+
+        }
+
         console.log('Deleted /downloads folder');
 
     });
