@@ -3,9 +3,13 @@ const dotenv = require('dotenv');
 const envPath = path.resolve(__dirname, '../.env');  // path of .env because we can only use environment variables if .env is in the root, so we need to specify it's location
 dotenv.config({path: envPath});
 
-const apiKey = process.env.API_KEY;
+const ProcessData = require('../ProcessData.js');
+
 const baseId = process.env.BASE_ID;
 const table = process.env.POVERTY_EDUCATION_LEVEL_TABLE;
+
+const processData = new ProcessData(baseId, table)
+
 
 // years mapped to the time ranges
 const years = new Map();
@@ -39,9 +43,7 @@ const getPovertyLevelsByEducation = async ()=>{
 
                 const URL = `https://api.census.gov/data/${year}/acs/acs${timeRange}/subject?get=${getVariables}&for=place:45000&in=state:12&key=${process.env.CENSUS_API_KEY}`
 
-                console.log(URL);
 
-                continue;
                 // fetch the data
                 const response = await fetch(URL, {
                     method: 'GET'
@@ -50,51 +52,11 @@ const getPovertyLevelsByEducation = async ()=>{
                 const data = await response.json();
 
                 // the columns/fields for airtable
-                const totalPopulationEstimate = data[1][0];
-                const belowPovEstimate = data[1][1];
-                const percentBelowPovEstimate = data[1][2];
+                const totalPopulationEstimate = parseInt(data[1][0]);
+                const belowPovEstimate = parseInt(data[1][1]);
+                const percentBelowPovEstimate = parseFloat(data[1][2]);
 
-
-                // create the record to send to air table
-                let recordData;
-
-                const record = await getRecord(year, educationLevel)
-
-                // the record exists
-                if( record.records?.length > 0 ){
-
-                    recordData = {
-                        "fields": {
-                            // "year": year,
-                            // "Education": educationLevel,
-                            "Total population": totalPopulationEstimate,
-                            "Below poverty rate": parseInt(belowPovEstimate),
-                            "Percent below poverty level": percentBelowPovEstimate,
-                        }
-                    };
-
-                    const id = record.records[0].id;
-                    await updateRecord(recordData, id);
-
-                // if record does not exist
-                }else{
-
-                    recordData = {
-                        "records": [
-                            {
-                                "fields": {
-                                    "year": year,
-                                    "Education": educationLevel,
-                                    "Total population": totalPopulationEstimate,
-                                    "Below poverty rate": parseInt(belowPovEstimate),
-                                    "Percent below poverty level": percentBelowPovEstimate,
-                                }
-                            }
-                        ]
-                    };
-
-                    await createRecord(recordData);
-                }
+                await sendToAirTable(year, educationLevel, totalPopulationEstimate, belowPovEstimate, percentBelowPovEstimate);
 
                 console.log("REMOVE RETURN STATEMENT TO CONTINUE ALL")
                 return;
@@ -106,87 +68,49 @@ const getPovertyLevelsByEducation = async ()=>{
     }
 }
 
-
-// stores each row into the airtable
-const createRecord = async (recordData) => {
-
-    const airtableURL = `https://api.airtable.com/v0/${baseId}/${table}`;
-
-    try {
-        const response = await fetch(airtableURL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(recordData)
-        });
+const sendToAirTable = async (year, educationLevel, totalPopulationEstimate, belowPovEstimate, percentBelowPovEstimate)=> {
 
 
-        const data = await response.json();
+    // create the record to send to air table
+    let recordData;
 
-        if (response.ok) {
+    const record = await processData.getRecord({"Year": year}, {"Education": educationLevel})
 
-            console.log('RECORD CREATED', data)
-        } else {
-            console.error('Failed to create record:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
+    // the record exists
+    if( record.records?.length > 0 ){
 
-const updateRecord = async (recordData, id) => {
-
-    const airtableURL = `https://api.airtable.com/v0/${baseId}/${table}/${id}`;
-
-
-    try {
-        const response = await fetch(airtableURL, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(recordData)
-        });
-
-
-        const data = await response.json();
-
-        if (response.ok) {
-
-            console.log('RECORD UPDATED', data)
-        } else {
-
-            console.error('Failed to create record:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
-
-const getRecord = async (year, educationLevel)=>{
-
-
-    const airtableURL = `https://api.airtable.com/v0/${baseId}/${table}?filterByFormula=AND({year} = ${year}, {Education} = "${educationLevel}")`;
-
-    try {
-        const response = await fetch(airtableURL, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
+        recordData = {
+            "fields": {
+                // "year": year,
+                // "Education": educationLevel,
+                "Total population": totalPopulationEstimate,
+                "Below poverty rate": belowPovEstimate,
+                "Percent below poverty level": percentBelowPovEstimate,
             }
-        });
+        };
 
-        const data = await response.json();
-        return data;
+        const id = record.records[0].id;
+        await processData.updateRecord(recordData, id);
 
-    } catch (error) {
-        console.error('Error:', error);
+        // if record does not exist
+    }else{
+
+        recordData = {
+            "records": [
+                {
+                    "fields": {
+                        "year": year,
+                        "Education": educationLevel,
+                        "Total population": totalPopulationEstimate,
+                        "Below poverty rate": belowPovEstimate,
+                        "Percent below poverty level": percentBelowPovEstimate,
+                    }
+                }
+            ]
+        };
+
+        await processData.createRecord(recordData);
     }
 }
-
 
 getPovertyLevelsByEducation();

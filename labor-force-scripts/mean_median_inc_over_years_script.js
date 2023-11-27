@@ -3,10 +3,13 @@ const dotenv = require('dotenv');
 const envPath = path.resolve(__dirname, '../.env');  // path of .env because we can only use environment variables if .env is in the root, so we need to specify it's location
 dotenv.config({path: envPath});
 
+const ProcessData = require('../ProcessData.js');
 
-const apiKey = process.env.API_KEY;
 const baseId = process.env.BASE_ID;
 const table = process.env.INCOME_MEAN_AND_MEDIAN_TABLE;
+
+const processData = new ProcessData(baseId, table)
+
 
 // years mapped to the time ranges
 const years = new Map();
@@ -20,8 +23,8 @@ years.set('2017', '5');
 
 // mean/median income levels mapped to their variables
 const censusVariables = new Map(); // refer to the README for the variable documentations
-censusVariables.set('Mean household income (dollars)', ['DP03_0063E']) // [estimate]
 censusVariables.set('Median household income (dollars)', ['DP03_0062E']) // [estimate]
+censusVariables.set('Mean household income (dollars)', ['DP03_0063E']) // [estimate]
 
 const getIncomeLevelByHousehold = async ()=>{
 
@@ -36,8 +39,7 @@ const getIncomeLevelByHousehold = async ()=>{
                 const getVariables = values.join(","); // join them by commas to format the way census requires
                 const URL = `https://api.census.gov/data/${year}/acs/acs${timeRange}/profile?get=${getVariables}&for=place:45000&in=state:12&key=${process.env.CENSUS_API_KEY}`
 
-                console.log(URL);
-                continue;
+                // continue;
                 // fetch the data
                 const response = await fetch(URL, {
                     method: 'GET'
@@ -45,44 +47,9 @@ const getIncomeLevelByHousehold = async ()=>{
 
                 const data = await response.json();
 
-                const dollars = data[1][0];
+                const dollars = parseFloat(data[1][0]);
 
-                // create the record to send to air table
-                let recordData;
-
-                const record = await getRecord(year, title)
-
-                // the record exists
-                if( record.records?.length > 0 ){
-
-                    recordData = {
-                                "fields": {
-                                    // "Name": title,
-                                    // "Year": parseInt(year),
-                                    "Dollars": parseInt(dollars),
-                            }
-                    };
-
-                    const id = record.records[0].id;
-                    await updateRecord(recordData, id);
-
-                    // if record does not exist
-                }else{
-
-                    recordData = {
-                        "records": [
-                            {
-                                "fields": {
-                                    "Name": title,
-                                    "Year": parseInt(year),
-                                    "Dollars": parseInt(dollars),
-                                }
-                            }
-                        ]
-                    };
-
-                    await createRecord(recordData);
-                }
+                await sendToAirTable(title, year, dollars);
 
                 console.log("REMOVE RETURN STATEMENT TO CONTINUE ALL")
                 return;
@@ -95,86 +62,47 @@ const getIncomeLevelByHousehold = async ()=>{
     }
 }
 
-
-// stores each row into the airtable
-const createRecord = async (recordData) => {
-
-    const airtableURL = `https://api.airtable.com/v0/${baseId}/${table}`;
-
-    try {
-        const response = await fetch(airtableURL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(recordData)
-        });
+const sendToAirTable = async (title, year, dollars)=>{
 
 
-        const data = await response.json();
+    // create the record to send to air table
+    let recordData;
 
-        if (response.ok) {
+    const record = await processData.getRecord({"Year": year}, {"Name": title})
 
-            console.log('RECORD CREATED', data)
-        } else {
-            console.error('Failed to create record:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
+    // the record exists
+    if( record.records?.length > 0 ){
 
-const updateRecord = async (recordData, id) => {
-
-    const airtableURL = `https://api.airtable.com/v0/${baseId}/${table}/${id}`;
-
-
-    try {
-        const response = await fetch(airtableURL, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(recordData)
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-
-            console.log('RECORD UPDATED', data)
-        } else {
-            console.error('Failed to create record:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
-
-const getRecord = async (year, title)=>{
-
-
-    const airtableURL = `https://api.airtable.com/v0/${baseId}/${table}?filterByFormula=AND({Year} = ${year}, {Name} = "${title}")`;
-
-    try {
-        const response = await fetch(airtableURL, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
+        recordData = {
+            "fields": {
+                // "Name": title,
+                // "Year": parseInt(year),
+                "Dollars": dollars,
             }
-        });
+        };
 
-        const data = await response.json();
-        return data;
+        const id = record.records[0].id;
+        await processData.updateRecord(recordData, id);
 
-    } catch (error) {
-        console.error('Error:', error);
+        // if record does not exist
+    }else{
+
+        recordData = {
+            "records": [
+                {
+                    "fields": {
+                        "Name": title,
+                        "Year": year,
+                        "Dollars": dollars,
+                    }
+                }
+            ]
+        };
+
+        await processData.createRecord(recordData);
     }
-}
 
+}
 
 
 getIncomeLevelByHousehold();

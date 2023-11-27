@@ -8,6 +8,14 @@ const dotenv = require('dotenv');
 const envPath = path.resolve(__dirname, '../.env');  // path of .env because we can only use environment variables if .env is in the root, so we need to specify it's location
 dotenv.config({path: envPath});
 
+const ProcessData = require('../ProcessData.js');
+
+const baseId = process.env.BASE_ID;
+const table = process.env.SEC_TABLE;
+
+const processData = new ProcessData(baseId, table)
+
+
 // get the xml data
 const getXMLData = () => {
 
@@ -195,10 +203,6 @@ async function waitForDownload() {
 
 // stores each row into the airtable
 const createRecord = async (recordData) => {
-
-    const apiKey = process.env.API_KEY;
-    const baseId = process.env.BASE_ID;
-    const table = process.env.SEC_TABLE;
 
     const airtableURL = `https://api.airtable.com/v0/${baseId}/${table}`;
 

@@ -1,0 +1,7 @@
+TABLE
+
+EmploymentByIndustry
+
+    1. changed from EmploymentByIndustry(population over 16) to EmploymentByIndustry
+    2. changed the fields of industries from Label to Industry
+

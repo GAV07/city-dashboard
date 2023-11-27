@@ -9,14 +9,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.6.2",
+    "convert-csv-to-json": "^2.0.0",
+    "csv-parse": "^5.5.2",
+    "csvtojson": "^2.0.10",
     "dotenv": "^16.3.1",
     "gunzip-maybe": "^1.4.2",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.7.0",
+    "openai": "^4.20.0",
     "pdf-parse": "^1.1.1",
     "pdf2json": "^3.0.5",
     "pdfreader": "^3.0.2",
     "puppeteer": "^21.5.0",
     "puppeteer-utilz": "^4.0.8",
+    "xlsx": "^0.18.5",
     "xml2js": "^0.6.2",
     "z-lib": "^0.0.8"
   }
