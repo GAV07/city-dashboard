@@ -23,14 +23,14 @@ years.set('2017', '5');
 
 // industries mapped to their variables
 const censusVariables = new Map(); // refer to the README for the variable documentations
-censusVariables.set('Agriculture, forestry, fishing and hunting, and mining', ['DP03_0033E', 'DP03_0033PE']) // [estimate]
+censusVariables.set('Agriculture, forestry, fishing and hunting, and mining', ['DP03_0033E', 'DP03_0033PE']) // [estimate, percent]
 censusVariables.set('Construction', ['DP03_0034E', 'DP03_0034PE']);
 censusVariables.set('Manufacturing', ['DP03_0035E', 'DP03_0035PE']);
 censusVariables.set('Wholesale trade', ['DP03_0036E', 'DP03_0036PE']);
 censusVariables.set('Retail trade', ['DP03_0037E', 'DP03_0037PE']);
 censusVariables.set('Transportation and warehousing, and utilities', ['DP03_0038E', 'DP03_0038PE']);
 censusVariables.set('Information', ['DP03_0039E', 'DP03_0039PE']);
-censusVariables.set('Finance and insurance, and real estate and rental and leasing', ['DP03_0040E', 'DP03_0040PE']); // [estimate, percent]
+censusVariables.set('Finance and insurance, and real estate and rental and leasing', ['DP03_0040E', 'DP03_0040PE']);
 censusVariables.set('Professional, scientific, and management, and administrative and waste management services', ['DP03_0041E', 'DP03_0041PE']);
 censusVariables.set('Educational services, and health care and social assistance', ['DP03_0042E', 'DP03_0042PE']);
 censusVariables.set('Arts, entertainment, and recreation, and accommodation and food services', ['DP03_0043E', 'DP03_0043PE']);

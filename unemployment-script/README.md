@@ -5,10 +5,10 @@
 1. [Introduction](#introduction)
 2. [How to Execute](#how-to-execute)
 3. [Understanding the Script](#understanding-the-script)
-    - [What Are Series IDs (example of Miami)](#seriedIDs)
+    - [What Are Series IDs (example of Miami)](#what-are-series-ids-example-of-miami)
     - [Example Query](#example-query)
     - [Code Explanation](#code-explanation)
-4. [BLS Documentation](#documentation)
+4. [BLS Documentation](#bls-documentation)
 
 ## Introduction
 

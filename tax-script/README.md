@@ -4,7 +4,7 @@
 
 1. [Introduction](#introduction)
 2. [How to Execute](#how-to-execute)
-3. [Tax PDF Information](#information)
+3. [Tax PDF Information](#tax-pdf-information)
 
 ## Introduction
 
