@@ -10,14 +10,16 @@
 
 ### These scripts scrape/gather/aggregate data from the census website
 
-1. #### `employment-by-industry-script.js`
+1. `employment-by-industry-script.js`
+   
     Gathers employment data categorized by various industries, such as agriculture, construction, manufacturing, finance, healthcare, and more. It provides a comprehensive overview of employment trends across diverse sectors over multiple years.
     
     #### To execute:
     ```bash
     node employment-by-industry-script.js
     ```
-2. #### `mean-median-inc-over-years-script.js`
+2. `mean-median-inc-over-years-script.js`
+   
     Retrieves mean and median household income data over several years. It provides insights into the economic trends, showcasing the changes in income levels for different regions.
 
     #### To execute:
@@ -25,7 +27,8 @@
     node mean-median-inc-over-years-script.js
     ```
    
-3. #### `overall-pov-inc-over-years-script.js`
+3. `overall-pov-inc-over-years-script.js`
+   
     Retrieves overall poverty income data over several years. It provides insights into the population, the number of individuals below the poverty level, and the percentage of people living below the poverty line.
 
     #### To execute:
@@ -33,7 +36,8 @@
     node overall-pov-inc-over-years-script.js
     ```
       
-4. #### `pop-by-income-script.js`
+4. `pop-by-income-script.js`
+   
     Retrieves population data categorized by income levels over multiple years. This script provides insights into the distribution of population across various income brackets.
 
     #### To execute:
@@ -41,7 +45,8 @@
     node pop-by-income-script.js
     ```
          
-5. #### `poverty-level-by-edu-script.js`
+5. `poverty-level-by-edu-script.js`
+   
     Retrieves data related to poverty levels categorized by education over multiple years. This script provides insights into the correlation between education levels and poverty rates.
 
     #### To execute:
