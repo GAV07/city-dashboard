@@ -32,7 +32,7 @@ const getXMLData = () => {
     console.log("Parsing xml data to json")
     // parse the xml data to json
     const parser = new xml2js.Parser();
-    let count = 0;
+
     parser.parseString(data, async function (err, result) {
 
         console.log('Looping through all firms to update db');

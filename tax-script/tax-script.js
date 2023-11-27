@@ -145,11 +145,11 @@ const readPDF = async (path, year) => {
     // parse the pdf
     const data = await PDFParser(pdf);
 
-    const text = data.text;
-
     const lines = data.text.split('\n');
 
-    fs.writeFileSync(__dirname + '/pdfText.text', text);
+    // fs.writeFileSync(__dirname + '/pdfText.text', text);
+
+    const text = data.text;
 
     // console.log(text);
 
