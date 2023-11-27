@@ -64,10 +64,10 @@ The project is structured as follows:
    - |
    - `labor-force-scripts/`
       - `employment-by-industry-script.js`
-      - `mean_median_inc_over_years_script.js`
-      - `overall_pov_inc_over_years_script.js`
-      - `pop_by_income_script.js`
-      - `poverty_level_by_edu_script.js`
+      - `mean-median-inc-over-years-script.js`
+      - `overall-pov-inc-over-years-script.js`
+      - `pop-by-income-script.js`
+      - `poverty-level-by-edu-script.js`
    - |
    - `sec-script/`
       - `sec-script.js`

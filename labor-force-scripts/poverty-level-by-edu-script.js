@@ -58,8 +58,8 @@ const getPovertyLevelsByEducation = async ()=>{
 
                 await sendToAirTable(year, educationLevel, totalPopulationEstimate, belowPovEstimate, percentBelowPovEstimate);
 
-                console.log("REMOVE RETURN STATEMENT TO CONTINUE ALL")
-                return;
+                // console.log("REMOVE RETURN STATEMENT TO CONTINUE ALL")
+                // return;
             } catch (error) {
                 console.error(`Error fetching ${URL}: ${error}`);
             }

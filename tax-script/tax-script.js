@@ -23,8 +23,8 @@ const cities = new Set();
 cities.add('city of miami beach preliminary');
 
 
-// const years = [2017, 2018, 2019, 2020, 2021, 2022, 2023]
-const years = [2023]
+const years = [2017, 2018, 2019, 2020, 2021, 2022, 2023]
+// const years = [2023]
 
 const propertyTypes = new Set();
 propertyTypes.add('single family');

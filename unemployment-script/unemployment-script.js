@@ -97,8 +97,8 @@ const getData = async () => {
                 console.log(`API REQUEST LIMIT REACHED`);
             }
 
-            console.log("REMOVE TO CONTINUE ALL")
-            return;
+            // console.log("REMOVE TO CONTINUE ALL")
+            // return;
 
         }
 
@@ -160,21 +160,30 @@ const insertRestOfMonths = async (totalMonths) => {
         for (let x = totalMonths; x < monthList.length; x++) {
 
             let date = monthList[x] + " 2023";
-            recordData = {
-                "records": [
-                    {
-                        "fields": {
-                            "Date": date,
-                            "Labor Force": null,
-                            "Employment": null,
-                            "Unemployment": null,
-                            "Unemployment Rate": null,
-                        }
-                    }
-                ]
-            };
 
-            await processData.createRecord(recordData);
+
+            const record = await processData.getRecord({"Date": date});
+
+            // the record does not exist
+            if( record.records?.length <= 0 ){
+
+                recordData = {
+                    "records": [
+                        {
+                            "fields": {
+                                "Date": date,
+                                "Labor Force": null,
+                                "Employment": null,
+                                "Unemployment": null,
+                                "Unemployment Rate": null,
+                            }
+                        }
+                    ]
+                };
+
+                await processData.createRecord(recordData);
+
+            }
         }
     }
 }

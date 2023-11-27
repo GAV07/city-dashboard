@@ -8,8 +8,8 @@ dotenv.config({path: envPath});
 class ProcessData{
 
     #API_KEY = process.env.API_KEY;
-    #BASE_ID = process.env.API_KEY;
-    #TABLE = process.env.API_KEY;
+    #BASE_ID;
+    #TABLE;
 
     constructor(baseId, table) {
 

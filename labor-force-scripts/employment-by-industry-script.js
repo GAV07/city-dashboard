@@ -62,8 +62,6 @@ const getIncomeLevelByHousehold = async ()=>{
                 let percent = parseFloat(data[1][1]);
 
                 await sendToAirTable(year, industry, population, percent);
-                console.log("REMOVE RETURN STATEMENT TO CONTINUE ALL")
-                return;
 
             } catch (error) {
                 console.error(`Error fetching ${URL}: ${error}`);
