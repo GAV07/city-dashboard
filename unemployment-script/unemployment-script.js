@@ -110,7 +110,6 @@ const sendToAirTable = async (date, unemploymentRate, unemployment, employment, 
 
     const record = await processData.getRecord({"Date": date});
 
-    console.log(record);
     // the record exists
     if( record.records?.length > 0 ){
 

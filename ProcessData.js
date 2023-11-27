@@ -1,3 +1,4 @@
+const fs = require("fs")
 const path = require("path")
 const dotenv = require('dotenv');
 const envPath = path.resolve(__dirname, '../.env');  // path of .env because we can only use environment variables if .env is in the root, so we need to specify it's location
@@ -77,9 +78,9 @@ class ProcessData{
         let airtableURL;
 
         if( arguments.length === 1 ){
-            airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula={${Object.keys(param1)[0]}} = "${Object.values(param1)[0]}"`
+            airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula={${Object.keys(param1)[0]}} = "${encodeURIComponent(Object.values(param1)[0])}"`
         }else if( arguments.length === 2 ){
-            airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula=AND({${Object.keys(param1)[0]}} = ${Object.values(param1)[0]}, {${Object.keys(param2)[0]}} = "${Object.values(param2)[0]}")`
+            airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula=AND({${Object.keys(param1)[0]}} = ${encodeURIComponent(Object.values(param1)[0])}, {${Object.keys(param2)[0]}} = "${encodeURIComponent(Object.values(param2)[0])}")`
         }
 
         try {

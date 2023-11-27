@@ -15,6 +15,13 @@ const table = process.env.SEC_TABLE;
 
 const processData = new ProcessData(baseId, table)
 
+function titleCase(str) {
+    str = str.toLowerCase().split(' ');
+    for (let i = 0; i < str.length; i++) {
+        str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+    }
+    return str.join(' ');
+}
 
 // get the xml data
 const getXMLData = () => {
@@ -25,27 +32,31 @@ const getXMLData = () => {
     console.log("Parsing xml data to json")
     // parse the xml data to json
     const parser = new xml2js.Parser();
-    parser.parseString(data, function (err, result) {
+    let count = 0;
+    parser.parseString(data, async function (err, result) {
 
         console.log('Looping through all firms to update db');
-        // loop through each firm
-        result.IAPDFirmSECReport.Firms[0].Firm.forEach(async (firm, index) => {
 
-            const legalName = firm.Info[0]?.$?.LegalNm?.trim() ?? "";
-            const street = firm.MainAddr[0]?.$?.Strt1?.trim() ?? "";
-            const street2 = firm.MainAddr[0]?.$?.Strt2?.trim() ?? "";
-            const postalCode = parseInt(firm.MainAddr[0]?.$?.PostlCd?.trim()) ?? "";
-            const city = firm.MainAddr[0]?.$?.City?.trim() ?? "";
-            const state = firm.MainAddr[0]?.$?.State?.trim() ?? "";
-            const country = firm.MainAddr[0]?.$?.Cntry?.trim() ?? "";
-            const phoneNumber = firm.MainAddr[0]?.$?.PhNb?.trim() ?? "";
-            const firmType = firm.Rgstn[0]?.$?.FirmType?.trim() ?? "";
-            const status = firm.Rgstn[0]?.$?.St?.trim() ?? "";
-            const fillingDate = firm.Filing[0]?.$?.Dt?.trim() ?? "";
-            const formVersion = firm.Filing[0]?.$?.FormVrsn?.trim() ?? "";
+        const firms = result.IAPDFirmSECReport.Firms[0].Firm;
+
+
+        for (let x = 0; x < firms.length; x++) {
+
+            const legalName = titleCase(firms[x].Info[0]?.$?.LegalNm?.trim()) ?? "";
+            const street = firms[x].MainAddr[0]?.$?.Strt1?.trim() ?? "";
+            const street2 = firms[x].MainAddr[0]?.$?.Strt2?.trim() ?? "";
+            const postalCode = parseInt(firms[x].MainAddr[0]?.$?.PostlCd?.trim()) ?? "";
+            const city = firms[x].MainAddr[0]?.$?.City?.trim() ?? "";
+            const state = firms[x].MainAddr[0]?.$?.State?.trim() ?? "";
+            const country = firms[x].MainAddr[0]?.$?.Cntry?.trim() ?? "";
+            const phoneNumber = firms[x].MainAddr[0]?.$?.PhNb?.trim() ?? "";
+            const firmType = firms[x].Rgstn[0]?.$?.FirmType?.trim() ?? "";
+            const status = firms[x].Rgstn[0]?.$?.St?.trim() ?? "";
+            const fillingDate = firms[x].Filing[0]?.$?.Dt?.trim() ?? "";
+            const formVersion = firms[x].Filing[0]?.$?.FormVrsn?.trim() ?? "";
 
             // form
-            const formInfo = firm.FormInfo[0];
+            const formInfo = firms[x].FormInfo[0];
 
             // part 1 of the form and its specific sections
             const part1 = formInfo.Part1A[0];
@@ -54,43 +65,121 @@ const getXMLData = () => {
             const numberOfAccounts = parseInt(part1.Item5F[0]?.$?.Q5F2F?.trim()) ?? "";
             const totalAssets = parseInt(part1.Item5F[0]?.$?.Q5F3?.trim()) ?? "";
 
-            const recordData = {
-                "records": [
-                    {
-                        "fields": {
-                            "Legal Name": legalName,
-                            "Firm Type": firmType,
-                            "Status": status,
-                            "Date": fillingDate,
-                            "Total Employees": totalEmployees,
-                            "Total RAUM": totalRAUM,
-                            "Number of Accounts": numberOfAccounts,
-                            "City": city,
-                            "State": state,
-                            "Country": country,
-                            "Phone Number": phoneNumber,
-                            "Postal Code": postalCode,
-                            "Street": street,
-                            "Street 2": street2,
-                            "Filing Date": fillingDate,
-                            "Form Version": formVersion
-                        }
-                    }
-                ]
-            };
 
-            if (index < 1) {
-                try {
-                    await createRecord(recordData);
-                }catch (e){
-                    console.log(e)
-                }
+            // only get the companies in Miami
+            if (city.toLowerCase() === 'miami') {
+
+                await sendToAirTable(
+                    legalName,
+                    street,
+                    street2,
+                    postalCode,
+                    city,
+                    state,
+                    country,
+                    phoneNumber,
+                    firmType, status,
+                    fillingDate,
+                    formVersion,
+                    totalEmployees,
+                    totalRAUM,
+                    numberOfAccounts,
+                    totalAssets
+                );
+
             }
-        })
+
+        }
 
     });
 
     console.log('Updated all firms to airtable');
+}
+
+
+const sendToAirTable = async (
+    legalName,
+    street,
+    street2,
+    postalCode,
+    city,
+    state,
+    country,
+    phoneNumber,
+    firmType,status,
+    fillingDate,
+    formVersion,
+    totalEmployees,
+    totalRAUM,
+    numberOfAccounts,
+    totalAssets
+) => {
+
+
+    // create the record to send to air table
+    let recordData;
+
+    const record = await processData.getRecord({"Legal Name": legalName});
+
+    console.log(legalName + " " + record.records?.length);
+
+    // the record exists
+    if( record.records?.length > 0 ){
+
+        recordData = {
+            "fields": {
+                // "Legal Name": legalName,
+                "Firm Type": firmType,
+                "Status": status,
+                "Date": fillingDate,
+                "Total Employees": totalEmployees,
+                "Total RAUM": totalRAUM,
+                "Number of Accounts": numberOfAccounts,
+                "City": city,
+                "State": state,
+                "Country": country,
+                "Phone Number": phoneNumber,
+                "Postal Code": postalCode,
+                "Street": street,
+                "Street 2": street2,
+                "Filing Date": fillingDate,
+                "Form Version": formVersion
+            }
+        };
+
+        const id = record.records[0].id;
+        await processData.updateRecord(recordData, id);
+
+        // if record does not exist
+    }else{
+
+        recordData = {
+            "records": [
+                {
+                    "fields": {
+                        "Legal Name": legalName,
+                        "Firm Type": firmType,
+                        "Status": status,
+                        "Date": fillingDate,
+                        "Total Employees": totalEmployees,
+                        "Total RAUM": totalRAUM,
+                        "Number of Accounts": numberOfAccounts,
+                        "City": city,
+                        "State": state,
+                        "Country": country,
+                        "Phone Number": phoneNumber,
+                        "Postal Code": postalCode,
+                        "Street": street,
+                        "Street 2": street2,
+                        "Filing Date": fillingDate,
+                        "Form Version": formVersion
+                    }
+                }
+            ]
+        };
+
+        await processData.createRecord(recordData);
+    }
 }
 
 // removes files and directories (/downloads)

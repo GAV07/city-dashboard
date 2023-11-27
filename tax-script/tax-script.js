@@ -388,7 +388,6 @@ const readPDF = async (path, year) => {
 
 const sendToAirTable = async (propertyType, year, count, justValue, taxableValue, taxableValueDiff, pct, newCons)=>{
 
-
     const record = await processData.getRecord({"Year": year}, {"Property Type": propertyType});
 
     // the record exists
