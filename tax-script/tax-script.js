@@ -324,6 +324,7 @@ const readPDF = async (path, year) => {
                 // in the event the model did not return a single JSON but added additional text
                 let attempts = 0;
                 let maxAttempts = 5; // to prevent an infinite loop if the chat GPT cannot return a single JSON
+
                 do{
                     try{
 

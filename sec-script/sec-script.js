@@ -67,6 +67,7 @@ const getXMLData = () => {
 
 
             // only get the companies in Miami
+            // if (city.toLowerCase() === 'miami') {
             if (city.toLowerCase() === 'miami') {
 
                 await sendToAirTable(

@@ -76,9 +76,13 @@ const getData = async () => {
 
                 totalMonths = data[0].data.length;
 
+                // loops through the total months currently
                 for(let x = 0; x < totalMonths; x++){
 
                     const date = new Date(data[0].data[x].periodName + " " + years[year]).toLocaleString('en-US', { month: 'short' }) + " " + years[year];
+
+                    // for each month grab the 4 values (employment, unemp. rate, labor force, unemployment)
+                    // ex [ [{jan: labor force}], [{jan: unemp. rate}], [{jan: unemployment}], [{jan: employment}]  ]
 
                     const unemploymentRate = parseFloat(data[0].data[x].value);
                     const unemployment = parseFloat(data[1].data[x].value);
