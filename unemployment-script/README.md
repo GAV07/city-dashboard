@@ -57,6 +57,79 @@ const res = await axios.post(URL, {
    }
 })
 ```
+```bash
+// output
+
+{
+        "status": "REQUEST_SUCCEEDED",
+        "responseTime": 155,
+        "message": [],
+        "Results": {
+        "series": [
+            {
+                "seriesID": "LAUCT124500000000003",
+                "data": [
+                    {
+                        "year": "2023",
+                        "period": "M09",
+                        "periodName": "September",
+                        "latest": "true",
+                        "value": "1.5",
+                        "footnotes": [
+                            {
+                                "code": "P",
+                                "text": "Preliminary."
+                            }
+                        ]
+                    },
+                    
+                    // ... august - february
+                
+                    {
+                        "year": "2023",
+                        "period": "M01",
+                        "periodName": "January",
+                        "value": "1.9",
+                        "footnotes": [
+                            {}
+                        ]
+                    }
+                ]
+            },
+            {
+                "seriesID": "LAUCT124500000000004",
+                "data": [
+                    {
+                        "year": "2023",
+                        "period": "M09",
+                        "periodName": "September",
+                        "latest": "true",
+                        "value": "3703",
+                        "footnotes": [
+                            {
+                                "code": "P",
+                                "text": "Preliminary."
+                            }
+                        ]
+                    },
+                    
+                    // ... august - february
+                    
+                    {
+                        "year": "2023",
+                        "period": "M01",
+                        "periodName": "January",
+                        "value": "4604",
+                        "footnotes": [
+                            {}
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
 
 ### Code Explanation
 

@@ -90,7 +90,7 @@ const response = await fetch(URL, {
 
 ### Poverty Information
 
-* `table` -> https://data.census.gov/table/ACSST{TIME_RANGE}Y{YEAR}.S1701?q=Poverty&g=160XX00US1245000
-* `variables` -> https://api.census.gov/data/{YEAR}/acs/acs{TIME_RANGE}/subject/variables.html
-* `API Url for poverty queries` -> https://api.census.gov/data/{YEAR}/acs/acs{TIME_RANGE}/subject?get={VARIABLES}&for=place:45000&in=state:12&key={CENSUS_API_KEY}
+* `table` - https://data.census.gov/table/ACSST{TIME_RANGE}Y{YEAR}.S1701?q=Poverty&g=160XX00US1245000
+* `variables` - https://api.census.gov/data/{YEAR}/acs/acs{TIME_RANGE}/subject/variables.html
+* `API Url for poverty queries` - https://api.census.gov/data/{YEAR}/acs/acs{TIME_RANGE}/subject?get={VARIABLES}&for=place:45000&in=state:12&key={CENSUS_API_KEY}
 
