@@ -79,7 +79,8 @@ const getXMLData = () => {
                     state,
                     country,
                     phoneNumber,
-                    firmType, status,
+                    firmType,
+                    status,
                     fillingDate,
                     formVersion,
                     totalEmployees,
@@ -107,7 +108,8 @@ const sendToAirTable = async (
     state,
     country,
     phoneNumber,
-    firmType,status,
+    firmType,
+    status,
     fillingDate,
     formVersion,
     totalEmployees,
@@ -290,32 +292,6 @@ async function waitForDownload() {
     }
 }
 
-
-// stores each row into the airtable
-const createRecord = async (recordData) => {
-
-    const airtableURL = `https://api.airtable.com/v0/${baseId}/${table}`;
-
-    try {
-        const response = await fetch(airtableURL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(recordData)
-        });
-
-        if (response.ok) {
-            // const data = await response.json();
-            // console.log('Record created successfully:', data);
-        } else {
-            console.error('Failed to create record:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
 
 const main = async ()=>{
 

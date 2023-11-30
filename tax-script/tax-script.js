@@ -311,6 +311,7 @@ const readPDF = async (path, year) => {
                     Sections 'Pers Prop Cent Assd' and 'All Assessed Property' do not have a count column/value, so default them to count:0. But do set all other properties to the rest of the value
                                         
                    strictly return the same format of the JSON example format I showed you. If you see any grammatical errors in the category type, they should be fixed and they should be title case. REMOVE ANY COMMAS FOR THE VALUE (AS THIS WILL MESS UP THE JSON). KEEP IT EXACTLY IN THE FORMAT OF THE EXAMPLE I SHOWED YOU WILL ALL THE PROPERTY NAMES AS WELL.
+                   RETURN A SINGLE JSON AND NOTHING ELSE!
                 `;
 
 

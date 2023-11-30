@@ -80,7 +80,7 @@ class ProcessData{
         if( arguments.length === 1 ){
             airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula={${Object.keys(param1)[0]}} = "${encodeURIComponent(Object.values(param1)[0])}"`
         }else if( arguments.length === 2 ){
-            airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula=AND({${Object.keys(param1)[0]}} = ${encodeURIComponent(Object.values(param1)[0])}, {${Object.keys(param2)[0]}} = "${encodeURIComponent(Object.values(param2)[0])}")`
+            airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula=AND({${Object.keys(param1)[0]}} = "${encodeURIComponent(Object.values(param1)[0])}", {${Object.keys(param2)[0]}} = "${encodeURIComponent(Object.values(param2)[0])}")`
         }
 
         try {
