@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "labor": "node npm-run-all /labor-force-scripts/employment-by-industry-script.js /labor-force-scripts/mean-median-inc-over-years-script.js /labor-force-scripts/overall-pov-inc-over-years-script.js /labor-force-scripts/pop-by-income-script.js /labor-force-scripts/poverty-level-by-edu-script.js",
     "sec": "node sec-script/sec-script.js",
     "tax": "node tax-script/tax-script.js",
     "unemployment": "node unemployment-script/unemployment-script.js",
     "all-data": "node npm-run-all labor sec tax unemployment",
-    "serve": "netlify functions:serve"
+    "serve": "netlify functions:serve",
+    "dev": "netlify dev"
   },
   "author": "",
   "license": "ISC",
