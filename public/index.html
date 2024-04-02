@@ -5,8 +5,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            background-color: #f7f7f7;
             padding: 20px;
+            margin: 0;
         }
 
         h1 {
@@ -17,29 +18,142 @@
         p {
             color: #666;
             text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
 
         .endpoints {
-            margin-top: 40px;
-            text-align: center;
+            margin-bottom: 20px;
         }
 
-        .endpoint {
+        .endpoint-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .endpoint-list-item {
             margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .endpoint-list-item:hover {
+            background-color: #dbf7c5;
+        }
+
+        .input-container {
+            margin-bottom: 10px;
+        }
+
+        .input-container label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .input-container input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .output-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .output-container p {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .output-container pre {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #333;
+            overflow-x: auto;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to the City Dashboard API</h1>
-    <p>Please hit the following endpoints to retrieve the desired data:</p>
-    <div class="endpoints">
-        <div class="endpoint">
-            <strong>GET /api/test</strong> - To quickly test the API and see if it working
+    <div class="container">
+        <h1>Welcome to the City of Miami Dashboard API</h1>
+        <p>Please click the following endpoints to retrieve the desired data!
+        <br>Enter parameters for optional filtering of specific endpoints:</p>
+        
+        <div class="endpoints">
+            <ul class="endpoint-list">
+                <li class="endpoint-list-item" onclick="fetchData('/api/test')">
+                    <strong>GET /api/test</strong> - To quickly test the API and see if it's working
+                </li>
+                <li class="endpoint-list-item" onclick="fetchEmploymentData()">
+                    <strong>GET /api/employment</strong> - Retrieve employment stats by industry and/or year
+                </li>
+                <!--Additional endpoints can be added. Associated filtering input boxes should be below -->
+            </ul>
         </div>
-        <div class="endpoint">
-            <strong>GET /api/all-data</strong> - Begin process of updating Airtable with new data
+
+        <!-- Employment parameters for filtering -->
+        <div class="input-container">
+            <label for="year">Year:</label>
+            <input type="text" id="year" name="year">
         </div>
-        <!-- Add more endpoints here as needed -->
+        <div class="input-container">
+            <label for="industry">Industry:</label>
+            <input type="text" id="industry" name="industry">
+        </div>
+        
+        <div class="output-container">
+            <p id="uri-info"></p>
+            <div class="output" id="output"></div>
+        </div>
     </div>
+
+    <script>
+        function fetchData(endpoint) {
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    const formattedData = JSON.stringify(data, null, 4);
+                    document.getElementById('output').innerHTML = `<pre>${formattedData}</pre>`;
+                    document.getElementById('uri-info').innerHTML = `<strong>URI:</strong> ${endpoint}`;
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+        
+        function fetchEmploymentData() {
+            const year = document.getElementById('year').value;
+            const industry = document.getElementById('industry').value;
+            
+            let employmentEndpoint = '/api/employment';
+            
+            if (year || industry) {
+                employmentEndpoint += `?year=${encodeURIComponent(year)}&industry=${encodeURIComponent(industry)}`;
+            }
+            
+            fetchData(employmentEndpoint);
+        }
+    </script>
 </body>
 </html>

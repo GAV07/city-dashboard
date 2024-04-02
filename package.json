@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "all": "^0.0.0",
     "axios": "^1.6.2",
     "convert-csv-to-json": "^2.0.0",
     "csv-parse": "^5.5.2",
@@ -29,6 +30,7 @@
     "pdfreader": "^3.0.2",
     "puppeteer": "^21.5.0",
     "puppeteer-utilz": "^4.0.8",
+    "run": "^1.5.0",
     "xlsx": "^0.18.5",
     "xml2js": "^0.6.2",
     "z-lib": "^0.0.8"

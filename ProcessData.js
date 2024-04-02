@@ -8,12 +8,12 @@ dotenv.config({path: envPath});
 class ProcessData{
 
     #API_KEY = process.env.API_KEY;
-    #BASE_ID;
+    #BASE_ID = process.env.BASE_ID; //Assuming the base id is constant, no need to pass in constructor
     #TABLE;
 
-    constructor(baseId, table) {
+    constructor(table) {
 
-        this.#BASE_ID = baseId;
+        // this.#BASE_ID = baseId;
         this.#TABLE = table;
     }
 
@@ -73,17 +73,22 @@ class ProcessData{
         }
     };
 
-    async getRecord (param1, param2){
+    async getRecord (params){
 
         let airtableURL;
-
-        if( arguments.length === 1 ){
-            airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula={${Object.keys(param1)[0]}} = "${encodeURIComponent(Object.values(param1)[0])}"`
-        }else if( arguments.length === 2 ){
-            airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula=AND({${Object.keys(param1)[0]}} = "${encodeURIComponent(Object.values(param1)[0])}", {${Object.keys(param2)[0]}} = "${encodeURIComponent(Object.values(param2)[0])}")`
-        }
+        //Utilizing object keys to aid in flexibility of the getRecord method, 
+        // more flexibility w/ num of params could be further implemented
+        //Also moved this into the try-catch to actually catch errors thrown by a possible undefined URL
 
         try {
+
+            if (Object.keys(params).length === 1) {
+                airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula={${Object.keys(params)[0]}} = "${encodeURIComponent(Object.values(params)[0])}"`;
+            } else if (Object.keys(params).length === 2) {
+                airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula=AND({${Object.keys(params)[0]}} = "${encodeURIComponent(Object.values(params)[0])}", {${Object.keys(params)[1]}} = "${encodeURIComponent(Object.values(params)[1])}")`;
+                console.log(airtableURL);
+            }
+
             const response = await fetch(airtableURL, {
                 method: 'GET',
                 headers: {
@@ -97,6 +102,7 @@ class ProcessData{
 
         } catch (error) {
             console.error('Error:', error);
+            throw error; //Helping to return any trailing errors that would be missed
         }
     }
 

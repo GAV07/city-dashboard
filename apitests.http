@@ -1,0 +1,10 @@
+get http://localhost:8888/.netlify/functions/test
+
+###
+get http://localhost:8888/.netlify/functions/employment?industry=Information
+
+###
+get http://localhost:8888/.netlify/functions/employment?year=2020 
+
+###
+get http://localhost:8888/.netlify/functions/employment?year=2020&industry=Construction

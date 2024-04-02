@@ -5,10 +5,10 @@ dotenv.config({path: envPath});
 
 const ProcessData = require('../ProcessData.js');
 
-const baseId = process.env.BASE_ID;
+// const baseId = process.env.BASE_ID;
 const table = process.env.INCOME_LEVEL_TABLE;
 
-const processData = new ProcessData(baseId, table)
+const processData = new ProcessData(table)
 
 
 // years mapped to the time ranges
