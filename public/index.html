@@ -98,35 +98,18 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to the City of Miami Dashboard API</h1>
+        <h1>Welcome to the Venture Miami API</h1>
         <p>Please click the following endpoints to retrieve the desired data!
-        <br>Enter parameters for optional filtering of specific endpoints:</p>
         
         <div class="endpoints">
             <ul class="endpoint-list">
                 <li class="endpoint-list-item" onclick="fetchData('/api/test')">
                     <strong>GET /api/test</strong> - To quickly test the API and see if it's working
                 </li>
-                <li class="endpoint-list-item" onclick="fetchEmploymentData()">
-                    <strong>GET /api/employment</strong> - Retrieve employment stats by industry and/or year
+                <li class="endpoint-list-item" onclick="fetchData('/api/all-data')">
+                    <strong>GET /api/all-data</strong> - Update all data from sources to the database
                 </li>
-                <!--Additional endpoints can be added. Associated filtering input boxes should be below -->
             </ul>
-        </div>
-
-        <!-- Employment parameters for filtering -->
-        <div class="input-container">
-            <label for="year">Year:</label>
-            <input type="text" id="year" name="year">
-        </div>
-        <div class="input-container">
-            <label for="industry">Industry:</label>
-            <input type="text" id="industry" name="industry">
-        </div>
-        
-        <div class="output-container">
-            <p id="uri-info"></p>
-            <div class="output" id="output"></div>
         </div>
     </div>
 
@@ -140,19 +123,6 @@
                     document.getElementById('uri-info').innerHTML = `<strong>URI:</strong> ${endpoint}`;
                 })
                 .catch(error => console.error('Error fetching data:', error));
-        }
-        
-        function fetchEmploymentData() {
-            const year = document.getElementById('year').value;
-            const industry = document.getElementById('industry').value;
-            
-            let employmentEndpoint = '/api/employment';
-            
-            if (year || industry) {
-                employmentEndpoint += `?year=${encodeURIComponent(year)}&industry=${encodeURIComponent(industry)}`;
-            }
-            
-            fetchData(employmentEndpoint);
         }
     </script>
 </body>
