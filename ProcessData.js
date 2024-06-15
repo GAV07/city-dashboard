@@ -12,8 +12,6 @@ class ProcessData{
     #TABLE;
 
     constructor(table) {
-
-        // this.#BASE_ID = baseId;
         this.#TABLE = table;
     }
 
@@ -83,10 +81,11 @@ class ProcessData{
         try {
 
             if (Object.keys(params).length === 1) {
-                airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula={${Object.keys(params)[0]}} = "${encodeURIComponent(Object.values(params)[0])}"`;
+                airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula={${Object.keys(params)[0]}}="${encodeURIComponent(Object.values(params)[0])}"`;
+                console.log("When 1:" + airtableURL);
             } else if (Object.keys(params).length === 2) {
-                airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula=AND({${Object.keys(params)[0]}} = "${encodeURIComponent(Object.values(params)[0])}", {${Object.keys(params)[1]}} = "${encodeURIComponent(Object.values(params)[1])}")`;
-                console.log(airtableURL);
+                airtableURL = `https://api.airtable.com/v0/${this.#BASE_ID}/${this.#TABLE}?filterByFormula=AND({${Object.keys(params)[0]}}="${encodeURIComponent(Object.values(params)[0])}",{${Object.keys(params)[1]}}="${encodeURIComponent(Object.values(params)[1])}")`;
+                console.log("When 2:" + airtableURL);
             }
 
             const response = await fetch(airtableURL, {

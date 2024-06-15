@@ -10,10 +10,10 @@ dotenv.config({path: envPath});
 
 const ProcessData = require('../ProcessData.js');
 
-const baseId = process.env.BASE_ID;
+//const baseId = process.env.BASE_ID;
 const table = process.env.SEC_TABLE;
 
-const processData = new ProcessData(baseId, table)
+const processData = new ProcessData(table)
 
 function titleCase(str) {
     str = str.toLowerCase().split(' ');
